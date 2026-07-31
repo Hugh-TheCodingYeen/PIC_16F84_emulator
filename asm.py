@@ -1,5 +1,5 @@
 # ============================================================================
-# Author: Hugh Wingman
+# Author: Hugh-TheCodingYeen
 # Project: PIC16 ISA Assembler/Disassembler
 # Year: 2026
 # Version: 1.0.1
