@@ -43,7 +43,7 @@ print(disasm(memory, offset=0, size=len(memory)))
 This project is distributed under the **BSD-3-Clause-No-Nuclear-Warranty** license.
 
 ## 👤 Author
-* **Author:** Hugh Wingman
+* **Author:** Hugh The Coding Yeen
 * **Project:** PIC16 ISA Assembler/Disassembler
 * **Year:** 2026
 * **Version:** 1.0.1
