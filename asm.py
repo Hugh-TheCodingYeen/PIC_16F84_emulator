@@ -2,7 +2,7 @@
 # Author: Hugh Wingman
 # Project: PIC16 ISA Assembler/Disassembler
 # Year: 2026
-# Version: 1.0
+# Version: 1.0.1
 # License: BSD-3-Clause-No-Nuclear-Warranty
 # ============================================================================
 
@@ -128,6 +128,11 @@ format_table = (
 
 # Словарь для быстрого поиска опкода по имени мнемоники
 
+mnemonics = {}
+
+for mnemonic, opcode, opmask, format_id in opcode_list:
+  mnemonics[mnemonic] = (opcode,opmask,format_id)
+
 # ============================================================================
 # БЛОК 3: ФУНКЦИИ КОДИРОВАНИЯ/ДЕКОДИРОВАНИЯ ИНСТРУКЦИЙ
 # ============================================================================
@@ -187,11 +192,6 @@ def decode_instruction(code):
 
   return mnem, operands
 
-mnemonics = {}
-
-for mnemonic, opcode, opmask, format_id in opcode_list:
-  mnemonics[mnemonic] = (opcode,opmask,format_id)
-
 # ============================================================================
 # БЛОК 4: ВЫСОКОУРОВНЕВЫЕ ИНТЕРФЕЙСЫ (АСМ/ДИЗАСМ)
 # ============================================================================
@@ -202,9 +202,6 @@ for mnemonic, opcode, opmask, format_id in opcode_list:
 # ИНТЕРФЕЙС АССЕМБЛЕРА
 
 def asm(text, mem=None, offset=0, size=DEFAULT_MEM_SIZE, fill=DEFAULT_FILL_ASM):
-  text_asm = [string.strip() for string in text.splitlines() if string.strip()]
-  cursor = offset
-  end_point = offset + (size or len(text_asm))
 
   e_asm = {
       'text_err':"Wrong input data, expected string",
@@ -224,10 +221,13 @@ def asm(text, mem=None, offset=0, size=DEFAULT_MEM_SIZE, fill=DEFAULT_FILL_ASM):
   if not size == None and not isinstance(size, int):
     raise Exception (e_asm.get('size_err'))
 
-  if end_point == 0:
-    end_point = None
-  elif end_point >= len(mem):
-    mem_fill = [fill for _ in range(end_point - len(mem))]
+  text_asm = [string.strip() for string in text.splitlines() if string.strip()]
+
+  cursor = offset
+  end_point = offset + (min(size, len(text_asm)) if size else len(text_asm))
+
+  if offset >= len(mem):
+    mem_fill = [fill for _ in range(offset - len(mem))]
     mem.extend(mem_fill)
 
   for instr in text_asm:
